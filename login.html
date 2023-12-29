@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" href="/css/fonts.css">
+  <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+
+  <link rel="shortcut icon" href="/img/icons/favicon.png" type="image/x-icon">
+  <title>Login</title>
+</head>
+<body class="background-color">
+  <header>
+    <div class="div-top">
+      <img src="img/icons/login/user.png" alt="" width="25px">
+      <nav>
+        <ul><li><a id="account" href="#">Create account</a></li></ul>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <section class="section-main">
+      <div class="div-main">
+        <img src="img/firstPage/tech.gif" alt="" width="300px">
+      </div>
+      
+      <div class="formsLogin" id="Login">
+      <form action="" >
+        <h2>Login</h2>
+        <label for="email">Email</label>
+        <input id="email_login" type="email" name="email" maxlength="30">
+        <label for="">Senha</label>
+        <input id="password_login" type="password" maxlength="8" >
+
+        <input id="access" type="button" value="Access">
+       
+      </form>
+    </div>
+   
+    <div class="formsCadastro" id="cadastro">
+  
+      <form  id='formCadastro' method="POST" >
+        <h2>Cadastro</h2>
+        <label for="email">Email</label>
+        <input id="email_user" type="email" name="email"  maxlength="30"required>
+        <label for="nome">Nome</label>
+        <input id="name_user" type="text" name="name" maxlength="30" required>
+        <label for="">Senha</label>
+        <input id="passwd" type="password" maxlength="8" required>
+        <label for="">Confirme senha</label>
+        <input id="confirmPasswd" type="password" required>
+        <textarea name="textarea">Conta criada</textarea>
+       
+        <input id="btn" type="submit" value="Register">
+        
+        <div>
+        <p>Este formulario esta usando serviço endpoint terceiro para controle de usuarios cadastrados.</p>
+        </div>  
+  
+      </form>
+
+  </div>
+
+  </section>
+  </main>
+
+  
+    
+
+  <script src="src/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+</html>

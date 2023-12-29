@@ -1,82 +1,174 @@
 
+window.addEventListener('load', function () {
 
-document.getElementById('btn').addEventListener('click', function(){
-    var name_user = document.getElementById('name')
-    var pwd = document.getElementById('passwd')
+
+
+
+    document.getElementById('access').addEventListener('click', function () {
+        var email_login = document.getElementById('email_login').value;
+        var pwd = document.getElementById('password_login').value;
     
-    if(!name_user.value || !pwd.value){
-       mostrarAlerta('Login invalido','Campos vazio favor preencha!','error','Preencher')
-    
-    }else{
-        registerUser(name_user.value, pwd.value);
-        mostrarAlerta('Login feito com sucesso','Bem vindo ao sistema '+name_user.value.toUpperCase(),'success','Entrar')
-    }
-   
-});
-/*implementado um local storage*/ 
-
-
-
-function registerUser(name_user, pwd){
-    var user ={name:name_user, passwd:pwd}
-    var users = localStorage.getItem("users");
-    if(!users){
-        users = [user];
-        localStorage.setItem("users",JSON.stringify(users))
-    }else if(FixCallStack(users)){
-        users = JSON.parse(users);
-        users.push(user);
-        localStorage.setItem('users',JSON.stringify(users));
-        
-    }
-}
-
-
-function FixCallStack(user) {
-    var users = localStorage.getItem("users");
-   users = JSON.parse(users);
-    var seEncontrar = false;
-    for (i=0; i<users.length; i++)
-        if (users[i].nome == user) {
-            found = true;
-            break;
+        if (!email_login || !pwd) {
+            mostrarAlerta('Login inválido', 'Campos vazios, favor preencher!', 'error', 'Preencher');
+        } else if (!stack(email_login, 'email')) {
+            mostrarAlerta('Login feito com sucesso', 'Bem-vindo ao sistema ' + email_login.toUpperCase(), 'success', 'Entrar');
+        } else if (!stack(email_login, 'email', pwd)) {
+            mostrarAlerta("Email ou senha incorretos", "Favor verifique suas credenciais", 'warning', 'OK');
+        } else {
+            console.log("error");
         }
-    return !seEncontrar
-}
-/*A "call stack" (pilha de chamadas) em JavaScript é uma estrutura de dados que 
-gerencia a execução de funções no seu código. Ela opera de maneira semelhante a 
-uma pilha na vida real, onde os elementos são adicionados e removidos na parte superior.
-Cada vez que uma função é chamada, um novo quadro de pilha é empilhado no topo, 
-representando a execução dessa função. Quando a função é concluída, seu quadro é 
-removido da pilha.
+    });
 
-Quando você executa um script em JavaScript, o interpretador JavaScript 
-(como o V8 no Chrome, SpiderMonkey no Firefox, ou o motor JavaScript no Node.js) 
-utiliza a pilha de 
-chamadas para rastrear a execução das funções. 
-Isso é importante para entender a ordem das chamadas de funções e para saber 
-para onde retornar após a conclusão de uma função.*/ 
+    /*Função de verificação no localStorage <obj> objetos 
+    <coluna> Colunas relacionadas a objetos seja nome ou email ou senha*/
+    function stack(obj, coluna,pwd) {
+        var users = localStorage.getItem("users");
+        users = JSON.parse(users) || [];
+        var seEncontrar = false;
+
+        for (var i = 0; i < users.length; i++)
+            if (users[i][coluna] == obj && users[i].passwd === pwd) {
+                seEncontrar = true;
+                break;
+            }
+        return !seEncontrar
+    }
 
 
-/*Funcionalidades do sistema*/ 
 
-function mostrarAlerta(titulo, texto,icone,button, tempoSegundos) {
-   
+
+
+    document.getElementById('formCadastro').addEventListener('submit', function (e) {
+
+
+        e.preventDefault();
+        var name_user = document.getElementById('name_user').value;
+        var email_user = document.getElementById('email_user').value;
+        var pwd = document.getElementById('passwd').value;
+        
+    
+        // Realizar a verificação do email
+        
+        if (stack(email_user, 'email')) {
+            registerUser(name_user,email_user, pwd)
+        } else {
+            alertCadastro("Email existente", "use um email diferente de " + email_user)
+            return; //encerra o processo de envio
+
+        }
+
+
+
+      
+        alertCadastro("Cliente Cadastrado", "Bem vindo ao sistema", "success")
+        setTimeout(function () {
+            location.reload();
+        }, 2000);
+
+        var formData = new FormData(this);
+
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://formspree.io/f/xayrwpaa');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        if(xhr.status === 200){
+            console.log('Email criado bem sucedido')
+        }
+        xhr.send(formData);
+
+    })
+
+
+ 
+
+    function registerUser(name_user, email, pwd) {
+        var user = { name:name_user, email:email, passwd:pwd }
+        var users = localStorage.getItem("users");
+
+        if (!users) {
+            users = [user];
+            localStorage.setItem("users", JSON.stringify(users))
+        }else{
+            users = JSON.parse(users);
+            users.push(user);
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+    }
+
+
+ 
+
+
+
+
+
+
+
+
+
+    var count = 1;
+    var login = document.getElementById('Login');
+    var cadastro = document.getElementById('cadastro');
+
+
+    document.getElementById('account').addEventListener('click', function (e) {
+        e.preventDefault();
+
+
+        count++;
+
+        if (count % 2 === 0) {
+
+            this.innerHTML = 'Login';
+            displayChange('cadastro');
+
+        } else {
+            this.innerHTML = 'Create account';
+            displayChange('Login');
+
+        }
+    });
+
+    cadastro.style.display = 'none';
+    function displayChange(form) {
+        if (form === 'Login') {
+            event.preventDefault();
+            login.style.display = 'block';
+            cadastro.style.display = 'none';
+        } else {
+            login.style.display = 'none'
+            cadastro.style.display = 'block';
+        }
+    }
+    function alertCadastro(titulo, texto, icone) {
+
+        Swal.fire({
+
+            title: titulo,
+            text: texto,
+            icon: icone,
+        })
+    }
+
+})
+function mostrarAlerta(titulo, texto, icone, button, tempoSegundos) {
+
     Swal.fire({
-       
-      title: titulo,
-      text: texto,
-      icon: icone, 
-      confirmButtonColor: '#5FBDFF',
-      confirmButtonText: button,
-      timer: tempoSegundos,
-      onBeforeOpen: () => {
-        Swal.showLoading();
-      },
-    }).then((result)=>{
-        if(result.isConfirmed && icone === 'success'){
-            window.location.href='secondPage.html'
+
+        title: titulo,
+        text: texto,
+        icon: icone,
+        confirmButtonColor: '#5FBDFF',
+        confirmButtonText: button,
+        timer: tempoSegundos,
+        onBeforeOpen: () => {
+            Swal.showLoading();
+        },
+    }).then((result) => {
+        if (result.isConfirmed && icone === 'success') {
+            window.location.href = 'secondPage.html';
         }
     })
 }
+
 
